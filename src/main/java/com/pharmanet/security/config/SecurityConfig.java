@@ -38,11 +38,28 @@ public class SecurityConfig {
                 .authorizeHttpRequests(http -> {
                     // EndPoints publicos
                     http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
+                    // EndPoints privados
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/presentations/all").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/presentations/add").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/presentations/delete/{id}").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/presentations/update/{id}").hasRole("ADMIN");
 
-                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAnyRole("ADMIN", "CAJERO");
-                    http.requestMatchers(HttpMethod.POST, "/method/post").hasRole("ADMIN");
-                    http.requestMatchers(HttpMethod.DELETE, "/method/delete").hasRole("ADMIN");
-                    http.requestMatchers(HttpMethod.PUT, "/method/put").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/laboratories/all").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/laboratories/add").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/laboratories/delete/{id}").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/laboratories/update/{id}").hasRole("ADMIN");
+
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/providers/all").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/providers/add").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/providers/delete/{id}").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/providers/update/{id}").hasRole("ADMIN");
+
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/products/all").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.GET, "/api/v1/products/catalogs").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/products/add").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.POST, "/api/v1/products/{productId}/lotes").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/products/delete/{id}").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/api/v1/products/update/{id}").hasRole("ADMIN");
 
 
 
