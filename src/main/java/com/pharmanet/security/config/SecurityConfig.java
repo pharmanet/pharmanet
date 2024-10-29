@@ -1,6 +1,9 @@
 package com.pharmanet.security.config;
 
+import com.pharmanet.security.filter.JwtTokenValidator;
+import com.pharmanet.security.utils.JwtUtils;
 import com.pharmanet.service.user.UserDetailServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,11 +19,16 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         return httpSecurity
@@ -29,13 +37,18 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(http -> {
                     // EndPoints publicos
-                    http.requestMatchers(HttpMethod.GET, "/auth/get").permitAll();
+                    http.requestMatchers(HttpMethod.POST, "/auth/**").permitAll();
 
-                    // Cofnigurar los endpoints privados
-                    http.requestMatchers(HttpMethod.POST, "/auth/post").hasAnyRole("ADMIN", "DEVELOPER");
-                    http.requestMatchers(HttpMethod.PATCH, "/auth/patch").hasAnyAuthority("REFACTOR");
+                    http.requestMatchers(HttpMethod.GET, "/method/get").hasAnyRole("ADMIN", "CAJERO");
+                    http.requestMatchers(HttpMethod.POST, "/method/post").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/method/delete").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.PUT, "/method/put").hasRole("ADMIN");
+
+
+
                     http.anyRequest().denyAll();
                 })
+                .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
                 .build();
     }
     @Bean
