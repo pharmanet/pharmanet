@@ -2,10 +2,12 @@ package com.pharmanet.service.product;
 
 import com.pharmanet.exception.ResourceNotFoundException;
 import com.pharmanet.persistence.entities.Lote;
+import com.pharmanet.persistence.entities.Presentation;
 import com.pharmanet.persistence.entities.Product;
 import com.pharmanet.persistence.repositories.*;
 import com.pharmanet.presentation.dto.CatalogueDto;
 import com.pharmanet.presentation.dto.LoteDto;
+import com.pharmanet.presentation.dto.PresentationDto;
 import com.pharmanet.presentation.dto.ProductDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,24 +81,8 @@ public class ProductServiceImpl implements IProductService {
 
     @Override
     public List<CatalogueDto> listCatalogs() {
-        List<Product> products = (List<Product>) productRepository.findAll();
-
-        // Crear una lista plana donde cada producto se repite por cada lote
-        return products.stream()
-                .flatMap(product -> product.getLotes().stream().map(lote -> {
-                    CatalogueDto catalogueDto = modelMapper.map(product, CatalogueDto.class);
-
-                    // Crear el lote DTO
-                    LoteDto loteDto = new LoteDto();
-                    loteDto.setId(lote.getId());
-                    loteDto.setStock(lote.getStock());
-                    loteDto.setExpirationDate(lote.getExpirationDate());
-                    loteDto.setProvider(lote.getProvider());
-
-                    catalogueDto.setLotes(loteDto);
-
-                    return catalogueDto;
-                }))
+        List<Lote> lotes = (List<Lote>) this.loteRepository.findAll();
+        return lotes.stream().map(lote -> modelMapper.map(lote, CatalogueDto.class))
                 .collect(Collectors.toList());
     }
 
