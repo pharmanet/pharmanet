@@ -2,12 +2,10 @@ package com.pharmanet.service.product;
 
 import com.pharmanet.exception.ResourceNotFoundException;
 import com.pharmanet.persistence.entities.Lote;
-import com.pharmanet.persistence.entities.Presentation;
 import com.pharmanet.persistence.entities.Product;
 import com.pharmanet.persistence.repositories.*;
 import com.pharmanet.presentation.dto.CatalogueDto;
 import com.pharmanet.presentation.dto.LoteDto;
-import com.pharmanet.presentation.dto.PresentationDto;
 import com.pharmanet.presentation.dto.ProductDto;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -132,5 +130,12 @@ public class ProductServiceImpl implements IProductService {
             return modelMapper.map(loteSaved, LoteDto.class);
         }).orElseThrow(() -> new ResourceNotFoundException("Provider no existe"));
 
+    }
+
+    @Override
+    public String deleteLote(Long id) {
+        loteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe lote para eliminar"));
+        loteRepository.deleteById(id);
+        return "Eliminado con exito";
     }
 }

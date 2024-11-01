@@ -68,6 +68,7 @@ public class SecurityConfig {
                     http.requestMatchers(HttpMethod.POST, "/api/v1/products/{productId}/lotes").hasRole("ADMIN");
                     http.requestMatchers(HttpMethod.DELETE, "/api/v1/products/delete/{id}").hasRole("ADMIN");
                     http.requestMatchers(HttpMethod.PUT, "/api/v1/products/update/{id}").hasRole("ADMIN");
+                    http.requestMatchers(HttpMethod.DELETE, "/api/v1/products/delete/lote/{id}").hasRole("ADMIN");
 
 
 

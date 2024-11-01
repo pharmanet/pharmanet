@@ -46,4 +46,8 @@ public class ProductController {
     public ResponseEntity<LoteDto> addLote(@PathVariable Long productId, @RequestBody LoteDto loteDto){
         return new ResponseEntity<>(productService.addLote(productId, loteDto), HttpStatus.CREATED);
     }
+    @DeleteMapping("/delete/lote/{id}")
+    public ResponseEntity<String> deleteLote(@PathVariable Long id){
+        return new ResponseEntity<>(productService.deleteLote(id), HttpStatus.OK);
+    }
 }

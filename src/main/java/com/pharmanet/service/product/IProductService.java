@@ -13,4 +13,5 @@ public interface IProductService {
     List<CatalogueDto> listCatalogs();
     ProductDto updateProduct(Long id, ProductDto productDto);
     LoteDto addLote(Long productId, LoteDto loteDto);
+    String deleteLote(Long id);
 }
