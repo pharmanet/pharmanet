@@ -1,5 +1,6 @@
 package com.pharmanet.presentation.controller;
 
+import com.pharmanet.presentation.dto.user.AuthCreateUserRequest;
 import com.pharmanet.presentation.dto.user.AuthLoginRequest;
 import com.pharmanet.presentation.dto.user.AuthResponse;
 import com.pharmanet.service.user.UserDetailServiceImpl;
@@ -21,5 +22,9 @@ public class AuthenticationController {
     @PostMapping("/log-in")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
         return new ResponseEntity<>(this.userDetailService.loginUser(userRequest), HttpStatus.OK);
+    }
+    @PostMapping("/sign-up")
+    public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest userRequest){
+        return new ResponseEntity<>(this.userDetailService.createUser(userRequest), HttpStatus.CREATED);
     }
 }
