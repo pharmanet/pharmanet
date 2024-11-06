@@ -77,7 +77,7 @@ public class SecurityConfig {
 
 
 
-                    http.anyRequest().denyAll();
+                    http.anyRequest().permitAll();
                 })
                 .addFilterBefore(new JwtTokenValidator(jwtUtils), BasicAuthenticationFilter.class)
                 .build();
