@@ -7,27 +7,31 @@ import com.pharmanet.persistence.repositories.*;
 import com.pharmanet.presentation.dto.CatalogueDto;
 import com.pharmanet.presentation.dto.LoteDto;
 import com.pharmanet.presentation.dto.ProductDto;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class ProductServiceImpl implements IProductService {
-    @Autowired
-    private ModelMapper modelMapper;
-    @Autowired
-    private IProductRepository productRepository;
-    @Autowired
-    private ILaboratoryRepository laboratoryRepository;
-    @Autowired
-    private IPresentationRepository presentationRepository;
-    @Autowired
-    private IProviderRepository providerRepository;
-    @Autowired
-    private ILoteRepository loteRepository;
+
+    private final ModelMapper modelMapper;
+    private  final IProductRepository productRepository;
+    private final ILaboratoryRepository laboratoryRepository;
+    private final IPresentationRepository presentationRepository;
+    private final IProviderRepository providerRepository;
+    private final ILoteRepository loteRepository;
+
+    private final String imageDir = "src/main/resources/static/images/";
 
 
     @Override

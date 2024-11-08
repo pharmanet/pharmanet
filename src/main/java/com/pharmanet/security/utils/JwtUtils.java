@@ -7,9 +7,11 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Date;
 import java.util.UUID;
@@ -55,7 +57,7 @@ public class JwtUtils {
             DecodedJWT decodedJWT = verifier.verify(token);
             return decodedJWT;
         } catch (JWTVerificationException exception) {
-            throw new JWTVerificationException("Token invalid, not Authorized");
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalid, not Authorized", exception);
         }
     }
     public String extractUsername(DecodedJWT decodedJWT){
