@@ -11,8 +11,5 @@ public interface IProductService {
     ProductDto addProduct(ProductDto productDto);
     String deleteProduct(Long id);
     List<ProductDto> findAll();
-    List<CatalogueDto> listCatalogs();
     ProductDto updateProduct(Long id, ProductDto productDto);
-    LoteDto addLote(Long productId, LoteDto loteDto);
-    String deleteLote(Long id);
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/products")
-@Tag(name = "Productos", description = "Productos y catálogos")
+@Tag(name = "Productos", description = "Productos")
 public class ProductController {
     @Autowired
     private IProductService productService;
@@ -33,12 +33,7 @@ public class ProductController {
         return ResponseEntity.ok(productosConDetallesYStock);
     }
 
-    @GetMapping("/catalogs")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<List<CatalogueDto>> listCatalogs(){
-        List<CatalogueDto> productos = productService.listCatalogs();
-        return ResponseEntity.ok(productos);
-    }
+
     @DeleteMapping("/delete/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<String> deleteProduct(@PathVariable Long id){
@@ -48,16 +43,5 @@ public class ProductController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto){
         return new ResponseEntity<>(productService.updateProduct(id, productDto), HttpStatus.OK);
-    }
-
-    @PostMapping("/{productId}/lotes")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<LoteDto> addLote(@PathVariable Long productId, @RequestBody LoteDto loteDto){
-        return new ResponseEntity<>(productService.addLote(productId, loteDto), HttpStatus.CREATED);
-    }
-    @DeleteMapping("/delete/lote/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<String> deleteLote(@PathVariable Long id){
-        return new ResponseEntity<>(productService.deleteLote(id), HttpStatus.OK);
     }
 }

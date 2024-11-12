@@ -4,20 +4,12 @@ import com.pharmanet.exception.ResourceNotFoundException;
 import com.pharmanet.persistence.entities.Lote;
 import com.pharmanet.persistence.entities.Product;
 import com.pharmanet.persistence.repositories.*;
-import com.pharmanet.presentation.dto.CatalogueDto;
-import com.pharmanet.presentation.dto.LoteDto;
 import com.pharmanet.presentation.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +20,6 @@ public class ProductServiceImpl implements IProductService {
     private  final IProductRepository productRepository;
     private final ILaboratoryRepository laboratoryRepository;
     private final IPresentationRepository presentationRepository;
-    private final IProviderRepository providerRepository;
-    private final ILoteRepository loteRepository;
-
-    private final String imageDir = "src/main/resources/static/images/";
-
 
     @Override
     public ProductDto addProduct(ProductDto productDto) {
@@ -82,13 +69,6 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public List<CatalogueDto> listCatalogs() {
-        List<Lote> lotes = (List<Lote>) this.loteRepository.findAll();
-        return lotes.stream().map(lote -> modelMapper.map(lote, CatalogueDto.class))
-                .collect(Collectors.toList());
-    }
-
-    @Override
     public ProductDto updateProduct(Long id, ProductDto productDto) {
         Product existingProduct = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe producto para actualizar"));
         if(productDto.getLaboratory().getId() == null){
@@ -114,32 +94,5 @@ public class ProductServiceImpl implements IProductService {
                             }).orElseThrow(() -> new ResourceNotFoundException("Presentación no existe"));
                 }).orElseThrow(() -> new ResourceNotFoundException("Laboratorio no existe"));
 
-    }
-
-    @Override
-    public LoteDto addLote(Long productId, LoteDto loteDto) {
-        Product existingProduct = productRepository.findById(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
-
-        Lote lote = modelMapper.map(loteDto, Lote.class);
-
-        if(loteDto.getProvider().getId() == null){
-            throw new ResourceNotFoundException("Campo obligatorio: provider");
-        }
-
-        return providerRepository.findById(lote.getProvider().getId()).map(provider -> {
-            lote.setProvider(provider);
-            lote.setProduct(existingProduct);
-            Lote loteSaved = loteRepository.save(lote);
-            return modelMapper.map(loteSaved, LoteDto.class);
-        }).orElseThrow(() -> new ResourceNotFoundException("Provider no existe"));
-
-    }
-
-    @Override
-    public String deleteLote(Long id) {
-        loteRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe lote para eliminar"));
-        loteRepository.deleteById(id);
-        return "Eliminado con exito";
     }
 }
