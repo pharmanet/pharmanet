@@ -7,6 +7,7 @@ import com.pharmanet.persistence.repositories.*;
 import com.pharmanet.presentation.dto.CatalogueDto;
 import com.pharmanet.presentation.dto.LoteDto;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -14,18 +15,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class LoteServiceImpl implements ILoteService{
     private final ModelMapper modelMapper;
     private  final IProductRepository productRepository;
     private final IProviderRepository providerRepository;
     private final ILoteRepository loteRepository;
+    String url = "http://localhost:8080/";
 
     @Override
     public List<CatalogueDto> listCatalogs() {
         List<Lote> lotes = (List<Lote>) this.loteRepository.findAll();
-        return lotes.stream().map(lote -> modelMapper.map(lote, CatalogueDto.class))
-                .collect(Collectors.toList());
+        return lotes.stream().map(lote ->{
+            CatalogueDto  catalogueDto = modelMapper.map(lote, CatalogueDto.class);
+            catalogueDto.setImage(url + lote.getProduct().getImage());
+            return catalogueDto;
+        }).collect(Collectors.toList());
     }
 
     @Override

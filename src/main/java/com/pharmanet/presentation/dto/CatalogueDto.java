@@ -18,4 +18,5 @@ public class CatalogueDto {
     private Product product;
     private Integer stock;
     private LocalDate expirationDate;
+    private String image;
 }
