@@ -21,6 +21,8 @@ public class ProductServiceImpl implements IProductService {
     private final ILaboratoryRepository laboratoryRepository;
     private final IPresentationRepository presentationRepository;
 
+    String url = "http://localhost:8080/";
+
     @Override
     public ProductDto addProduct(ProductDto productDto) {
         Product product = modelMapper.map(productDto, Product.class);
@@ -64,6 +66,12 @@ public class ProductServiceImpl implements IProductService {
                     .sum();
 
             productDto.setTotalStock(totalStock);  // Asignar el totalStock al DTO
+            if(product.getImage() == null){
+               productDto.setImage(url + "default.jpg");
+            }else {
+                productDto.setImage(url + product.getImage());
+            }
+
             return productDto;
         }).collect(Collectors.toList());
     }

@@ -24,5 +24,6 @@ public class ProductDto {
     private Laboratory laboratory;
     private Presentation presentation;
     private Long totalStock;
+    private String image;
 
 }
