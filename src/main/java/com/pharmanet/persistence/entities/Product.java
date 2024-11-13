@@ -38,6 +38,7 @@ public class Product {
     @JsonIgnore
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Lote> lotes;
+    private String image;
 
 
 }
