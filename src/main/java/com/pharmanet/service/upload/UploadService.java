@@ -30,10 +30,8 @@ public class UploadService {
         return defaultImage;
     }
 
-    public void deleteUpload(String nombre) throws IOException {
+    public void deleteUpload(String nombre) {
         File file = new File(url + nombre);
-        if (!nombre.equals(defaultImage)) {  // Evitar borrar la imagen predeterminada
-            file.delete();
-        }
+        file.delete();
     }
 }

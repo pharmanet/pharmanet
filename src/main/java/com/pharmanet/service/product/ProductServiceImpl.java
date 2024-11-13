@@ -5,10 +5,12 @@ import com.pharmanet.persistence.entities.Lote;
 import com.pharmanet.persistence.entities.Product;
 import com.pharmanet.persistence.repositories.*;
 import com.pharmanet.presentation.dto.ProductDto;
+import com.pharmanet.service.upload.UploadService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,7 +22,7 @@ public class ProductServiceImpl implements IProductService {
     private  final IProductRepository productRepository;
     private final ILaboratoryRepository laboratoryRepository;
     private final IPresentationRepository presentationRepository;
-
+    private final UploadService uploadService;
     String url = "http://localhost:8080/";
 
     @Override
@@ -40,7 +42,7 @@ public class ProductServiceImpl implements IProductService {
 
             return presentationRepository.findById(product.getPresentation().getId()).map(presentation -> {
                 product.setPresentation(presentation);
-
+                product.setImage("default.jpg");
                 Product productSaved = productRepository.save(product);
                 return modelMapper.map(productSaved, ProductDto.class);
             }).orElseThrow(() -> new ResourceNotFoundException("Presentación no existe"));
@@ -48,8 +50,11 @@ public class ProductServiceImpl implements IProductService {
     }
 
     @Override
-    public String deleteProduct(Long id) {
-        productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe producto para eliminar"));
+    public String deleteProduct(Long id)  {
+        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No existe producto para eliminar"));
+        if(!product.getImage().equals("default.jpg")){
+            uploadService.deleteUpload(product.getImage());
+        }
         productRepository.deleteById(id);
         return "Eliminado con exito";
     }
@@ -66,12 +71,7 @@ public class ProductServiceImpl implements IProductService {
                     .sum();
 
             productDto.setTotalStock(totalStock);  // Asignar el totalStock al DTO
-            if(product.getImage() == null){
-               productDto.setImage(url + "default.jpg");
-            }else {
-                productDto.setImage(url + product.getImage());
-            }
-
+            productDto.setImage(url + product.getImage());
             return productDto;
         }).collect(Collectors.toList());
     }
