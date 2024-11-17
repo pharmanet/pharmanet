@@ -54,7 +54,7 @@ public class PresentationServiceImpl implements IPresentationService {
 
         Optional<Presentation> findPresentation = presentationRepository.findByName(presentationDto.getName());
         if(findPresentation.isPresent() && !findPresentation.get().equals(presentation)){
-            throw new ResourceNotFoundException("Ya existe un presentación con el mismo nombre");
+            throw new AlreadyExistsException("Ya existe un presentación con el mismo nombre");
         }
 
         presentation.setName(presentationDto.getName());

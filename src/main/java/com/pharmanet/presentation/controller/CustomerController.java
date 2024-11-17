@@ -3,6 +3,7 @@ package com.pharmanet.presentation.controller;
 import com.pharmanet.presentation.dto.CustomerDto;
 import com.pharmanet.service.customer.ICustomerService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,12 +21,12 @@ public class CustomerController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<CustomerDto> saveCustomer(@RequestBody CustomerDto customerDto){
+    public ResponseEntity<CustomerDto> saveCustomer(@RequestBody @Valid CustomerDto customerDto){
         return new ResponseEntity<>(customerService.addCustomer(customerDto), HttpStatus.CREATED);
     }
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody CustomerDto customerDto){
+    public ResponseEntity<?> updateCustomer(@PathVariable Long id, @RequestBody @Valid CustomerDto customerDto){
         return new ResponseEntity<>(customerService.updateCustomer(id, customerDto), HttpStatus.OK);
     }
     @DeleteMapping("delete/{id}")

@@ -5,6 +5,7 @@ import com.pharmanet.presentation.dto.LoteDto;
 import com.pharmanet.presentation.dto.ProductDto;
 import com.pharmanet.service.product.IProductService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class ProductController {
 
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProductDto> addProduct(@RequestBody ProductDto productDto){
+    public ResponseEntity<ProductDto> addProduct(@RequestBody @Valid ProductDto productDto){
         return new ResponseEntity<>(productService.addProduct(productDto), HttpStatus.CREATED);
     }
     @GetMapping("/all")
@@ -42,7 +43,7 @@ public class ProductController {
     }
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody ProductDto productDto){
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDto productDto){
         return new ResponseEntity<>(productService.updateProduct(id, productDto), HttpStatus.OK);
     }
 }

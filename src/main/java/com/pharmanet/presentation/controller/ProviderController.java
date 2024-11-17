@@ -4,6 +4,7 @@ import com.pharmanet.presentation.dto.ProviderDto;
 import com.pharmanet.service.provider.IProviderService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class ProviderController {
     )
     @PostMapping("/add")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProviderDto> addProvider(@RequestBody ProviderDto providerDto){
+    public ResponseEntity<ProviderDto> addProvider(@RequestBody @Valid ProviderDto providerDto){
         return new ResponseEntity<>(providerService.addProvider(providerDto), HttpStatus.CREATED);
     }
 
@@ -56,7 +57,7 @@ public class ProviderController {
     )
     @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<ProviderDto> updateProvider(@PathVariable Long id, @RequestBody ProviderDto providerDto){
+    public ResponseEntity<ProviderDto> updateProvider(@PathVariable Long id, @RequestBody @Valid ProviderDto providerDto){
         return new ResponseEntity<>(providerService.updateProvider(id, providerDto), HttpStatus.OK);
     }
 }
