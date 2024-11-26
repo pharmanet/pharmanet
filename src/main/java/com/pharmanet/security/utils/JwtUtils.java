@@ -54,10 +54,9 @@ public class JwtUtils {
                     .withIssuer(this.userGenerator)
                     .build();
 
-            DecodedJWT decodedJWT = verifier.verify(token);
-            return decodedJWT;
-        } catch (JWTVerificationException exception) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Token invalid, not Authorized", exception);
+            return verifier.verify(token);
+        } catch (JWTVerificationException e) {
+            throw new JWTVerificationException("Token invalid, not Authorized");
         }
     }
     public String extractUsername(DecodedJWT decodedJWT){
