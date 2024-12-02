@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@PreAuthorize("permitAll()")
 @RequestMapping("/auth")
 @Tag(name = "Autenticación", description = "Iniciar sesión y registrar un usuario para obtener un token")
 public class AuthenticationController {
@@ -24,10 +23,12 @@ public class AuthenticationController {
     private UserDetailServiceImpl userDetailService;
 
     @PostMapping("/log-in")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid AuthLoginRequest userRequest){
         return new ResponseEntity<>(this.userDetailService.loginUser(userRequest), HttpStatus.OK);
     }
     @PostMapping("/sign-up")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<AuthResponse> register(@RequestBody @Valid AuthCreateUserRequest userRequest){
         return new ResponseEntity<>(this.userDetailService.createUser(userRequest), HttpStatus.CREATED);
     }

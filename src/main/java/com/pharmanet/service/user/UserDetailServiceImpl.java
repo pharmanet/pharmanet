@@ -1,5 +1,6 @@
 package com.pharmanet.service.user;
 
+import com.pharmanet.exception.AlreadyExistsException;
 import com.pharmanet.persistence.entities.user.RoleEntity;
 import com.pharmanet.persistence.entities.user.UserEntity;
 import com.pharmanet.persistence.repositories.IRoleRepository;
@@ -24,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -75,6 +77,12 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
         if (roleEntityList.isEmpty()) {
             throw new IllegalArgumentException("The roles specified does not exist.");
+        }
+
+        Optional<UserEntity> findUser = userRepository.findUserEntityByUsername(username);
+
+        if(findUser.isPresent()){
+            throw new AlreadyExistsException("Ya existe un usuario registrado con el mismo nombre de usuario");
         }
 
         UserEntity userEntity = UserEntity.builder().username(username).password(passwordEncoder.encode(password)).roles(roleEntityList).isEnabled(true).accountNoLocked(true).accountNoExpired(true).credentialNoExpired(true).build();
