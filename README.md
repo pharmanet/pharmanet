@@ -32,7 +32,7 @@ cd pharmanet
 
 **4. Correr la aplicación**
 
-**5. Antes de hacer peticiones pegar y copiar el script sql y ejecutar**
+**5. Antes de hacer peticiones pegar y copiar el script user.sql y ejecutar**
 
 **6. Aceder a <http://localhost:8080/swagger-ui.html>**
 
