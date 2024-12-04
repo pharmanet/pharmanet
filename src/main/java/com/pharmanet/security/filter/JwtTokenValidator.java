@@ -1,5 +1,6 @@
 package com.pharmanet.security.filter;
 
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.pharmanet.security.utils.JwtUtils;
 import jakarta.servlet.FilterChain;
@@ -31,26 +32,32 @@ public class JwtTokenValidator extends OncePerRequestFilter {
     protected void doFilterInternal(@NotNull HttpServletRequest request,
                                     @NotNull HttpServletResponse response,
                                     @NotNull FilterChain filterChain) throws ServletException, IOException {
+        try{
+            String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        String jwtToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+            if (jwtToken != null) {
+                jwtToken = jwtToken.substring(7);
 
-        if (jwtToken != null) {
-            jwtToken = jwtToken.substring(7);
+                DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
 
-            DecodedJWT decodedJWT = jwtUtils.validateToken(jwtToken);
+                String username = jwtUtils.extractUsername(decodedJWT);
+                String stringAuthorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
 
-            String username = jwtUtils.extractUsername(decodedJWT);
-            String stringAuthorities = jwtUtils.getSpecificClaim(decodedJWT, "authorities").asString();
+                Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
 
-            Collection<? extends GrantedAuthority> authorities = AuthorityUtils.commaSeparatedStringToAuthorityList(stringAuthorities);
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
+                Authentication authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
+                context.setAuthentication(authenticationToken);
+                SecurityContextHolder.setContext(context);
 
-            SecurityContext context = SecurityContextHolder.createEmptyContext();
-            Authentication authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
-            context.setAuthentication(authenticationToken);
-            SecurityContextHolder.setContext(context);
+            }
+            filterChain.doFilter(request, response);
 
+
+        }catch (
+                JWTVerificationException e) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Invalid or expired token");
         }
-        filterChain.doFilter(request, response);
-
     }
 }
