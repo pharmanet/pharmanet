@@ -53,7 +53,6 @@ public class JwtTokenValidator extends OncePerRequestFilter {
             }
             filterChain.doFilter(request, response);
 
-
         }catch (
                 JWTVerificationException e) {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
